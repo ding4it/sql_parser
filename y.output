@@ -1,0 +1,285 @@
+Grammar
+
+    0 $accept: select $end
+
+    1 select: SELECT tnames FROM tables SEMICOLON
+    2       | SELECT tnames FROM tables WHERE wheres SEMICOLON
+
+    3 tnames: tname
+    4       | tnames COMMA tname
+
+    5 tname: WORD
+
+    6 tables: table
+    7       | tables COMMA table
+
+    8 table: WORD
+
+    9 wordornum: WORD
+   10          | NUMBER
+
+   11 comp: wordornum COMPARE wordornum
+
+   12 wheres: comp
+   13       | wheres LOGIC comp
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+SELECT (258) 1 2
+FROM (259) 1 2
+WHERE (260) 2
+WORD (261) 5 8 9
+COMMA (262) 4 7
+SEMICOLON (263) 1 2
+COMPARE (264) 11
+NUMBER (265) 10
+LOGIC (266) 13
+
+
+Nonterminals, with rules where they appear
+
+$accept (12)
+    on left: 0
+select (13)
+    on left: 1 2, on right: 0
+tnames (14)
+    on left: 3 4, on right: 1 2 4
+tname (15)
+    on left: 5, on right: 3 4
+tables (16)
+    on left: 6 7, on right: 1 2 7
+table (17)
+    on left: 8, on right: 6 7
+wordornum (18)
+    on left: 9 10, on right: 11
+comp (19)
+    on left: 11, on right: 12 13
+wheres (20)
+    on left: 12 13, on right: 2 13
+
+
+State 0
+
+    0 $accept: . select $end
+
+    SELECT  shift, and go to state 1
+
+    select  go to state 2
+
+
+State 1
+
+    1 select: SELECT . tnames FROM tables SEMICOLON
+    2       | SELECT . tnames FROM tables WHERE wheres SEMICOLON
+
+    WORD  shift, and go to state 3
+
+    tnames  go to state 4
+    tname   go to state 5
+
+
+State 2
+
+    0 $accept: select . $end
+
+    $end  shift, and go to state 6
+
+
+State 3
+
+    5 tname: WORD .
+
+    $default  reduce using rule 5 (tname)
+
+
+State 4
+
+    1 select: SELECT tnames . FROM tables SEMICOLON
+    2       | SELECT tnames . FROM tables WHERE wheres SEMICOLON
+    4 tnames: tnames . COMMA tname
+
+    FROM   shift, and go to state 7
+    COMMA  shift, and go to state 8
+
+
+State 5
+
+    3 tnames: tname .
+
+    $default  reduce using rule 3 (tnames)
+
+
+State 6
+
+    0 $accept: select $end .
+
+    $default  accept
+
+
+State 7
+
+    1 select: SELECT tnames FROM . tables SEMICOLON
+    2       | SELECT tnames FROM . tables WHERE wheres SEMICOLON
+
+    WORD  shift, and go to state 9
+
+    tables  go to state 10
+    table   go to state 11
+
+
+State 8
+
+    4 tnames: tnames COMMA . tname
+
+    WORD  shift, and go to state 3
+
+    tname  go to state 12
+
+
+State 9
+
+    8 table: WORD .
+
+    $default  reduce using rule 8 (table)
+
+
+State 10
+
+    1 select: SELECT tnames FROM tables . SEMICOLON
+    2       | SELECT tnames FROM tables . WHERE wheres SEMICOLON
+    7 tables: tables . COMMA table
+
+    WHERE      shift, and go to state 13
+    COMMA      shift, and go to state 14
+    SEMICOLON  shift, and go to state 15
+
+
+State 11
+
+    6 tables: table .
+
+    $default  reduce using rule 6 (tables)
+
+
+State 12
+
+    4 tnames: tnames COMMA tname .
+
+    $default  reduce using rule 4 (tnames)
+
+
+State 13
+
+    2 select: SELECT tnames FROM tables WHERE . wheres SEMICOLON
+
+    WORD    shift, and go to state 16
+    NUMBER  shift, and go to state 17
+
+    wordornum  go to state 18
+    comp       go to state 19
+    wheres     go to state 20
+
+
+State 14
+
+    7 tables: tables COMMA . table
+
+    WORD  shift, and go to state 9
+
+    table  go to state 21
+
+
+State 15
+
+    1 select: SELECT tnames FROM tables SEMICOLON .
+
+    $default  reduce using rule 1 (select)
+
+
+State 16
+
+    9 wordornum: WORD .
+
+    $default  reduce using rule 9 (wordornum)
+
+
+State 17
+
+   10 wordornum: NUMBER .
+
+    $default  reduce using rule 10 (wordornum)
+
+
+State 18
+
+   11 comp: wordornum . COMPARE wordornum
+
+    COMPARE  shift, and go to state 22
+
+
+State 19
+
+   12 wheres: comp .
+
+    $default  reduce using rule 12 (wheres)
+
+
+State 20
+
+    2 select: SELECT tnames FROM tables WHERE wheres . SEMICOLON
+   13 wheres: wheres . LOGIC comp
+
+    SEMICOLON  shift, and go to state 23
+    LOGIC      shift, and go to state 24
+
+
+State 21
+
+    7 tables: tables COMMA table .
+
+    $default  reduce using rule 7 (tables)
+
+
+State 22
+
+   11 comp: wordornum COMPARE . wordornum
+
+    WORD    shift, and go to state 16
+    NUMBER  shift, and go to state 17
+
+    wordornum  go to state 25
+
+
+State 23
+
+    2 select: SELECT tnames FROM tables WHERE wheres SEMICOLON .
+
+    $default  reduce using rule 2 (select)
+
+
+State 24
+
+   13 wheres: wheres LOGIC . comp
+
+    WORD    shift, and go to state 16
+    NUMBER  shift, and go to state 17
+
+    wordornum  go to state 18
+    comp       go to state 26
+
+
+State 25
+
+   11 comp: wordornum COMPARE wordornum .
+
+    $default  reduce using rule 11 (comp)
+
+
+State 26
+
+   13 wheres: wheres LOGIC comp .
+
+    $default  reduce using rule 13 (wheres)
