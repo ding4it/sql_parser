@@ -53,7 +53,10 @@ extern int yydebug;
     SEMICOLON = 263,
     COMPARE = 264,
     NUMBER = 265,
-    LOGIC = 266
+    LOGIC = 266,
+    LEFTPARENTHESIS = 267,
+    RIGHTPARENTHESIS = 268,
+    AS = 269
   };
 #endif
 /* Tokens.  */
@@ -66,6 +69,9 @@ extern int yydebug;
 #define COMPARE 264
 #define NUMBER 265
 #define LOGIC 266
+#define LEFTPARENTHESIS 267
+#define RIGHTPARENTHESIS 268
+#define AS 269
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED

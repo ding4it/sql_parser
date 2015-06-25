@@ -139,7 +139,7 @@ string Select::getName()
     {
         rs += " where " + wheres->getName();
     }
-    return rs + ";";
+    return rs;
 }
 
 Select::~Select()
@@ -151,38 +151,62 @@ void Select::printspace(int space)
     for(int i=0; i<space; i++)
         cout << "    ";
 }
+
 void Select::printTree()
 {
-    int space = 0;
+    return printTree(0);
+}
+void Select::printTree(int space)
+{
     printspace(space);
-    cout << "SELECT" <<endl;
+    cout << "+ QUERY/SELECT"<<endl;
+    space +=1;
+    printspace(space);
+    cout << "+ SELECT" <<endl;
+    printspace(space);
+    cout << "+ FIELD" <<endl;
     space += 1;
     vector<Tname*> * ns = this->names->getNames();
     vector<Tname*>::iterator it1 = ns->begin();
+
     for(; it1!=ns->end(); it1++)
     {
         printspace(space);
-        cout << (*it1)->getName() <<endl;
+        cout << "+ " << (*it1)->getName() <<endl;
     }
     space -= 1;
 
     printspace(space);
-    cout << "FROM" <<endl;
+    cout << "+ FROM" <<endl;
+    printspace(space);
+    cout << "+ TABLE" <<endl;
+
     space += 1;
 
     vector<Table*> * ts = this->tables->getTables();
     vector<Table*>::iterator it2 = ts->begin();
     for(; it2!=ts->end(); it2++)
     {
-        printspace(space);
-        cout << (*it2)->getName() <<endl;
+        if(  (*it2)->getSelect() != NULL)
+        {
+            printspace(space);
+            cout << "+ TABLE/SELECT AS " << (*it2)->getName() <<endl;
+            space +=1;
+            (*it2)->getSelect()->printTree(space);
+            space -=1;
+        }
+        else
+        {
+            printspace(space);
+            cout << "+ " << (*it2)->getName() <<endl;
+        }
     }
     space -= 1;
 
     if(this->wheres != NULL)
     {
         printspace(space);
-        cout << "Where" <<endl;
+        cout << "+ WHERE" <<endl;
         space += 1;
         vector<Where*>::iterator it3;
         vector<Logic*>::iterator it4;
@@ -190,39 +214,29 @@ void Select::printTree()
         it3= wheres->getCompares()->begin();
         it4 = wheres->getLogics() ->begin();
         printspace(space);
-        cout << "{" << endl;
+        cout << "+ COMPARE[ " << (*it3)->getOp()->getName() << " ]"<< endl;
         space +=1;
-
         printspace(space);
-        cout << (*it3)->getLeft()->getName() << endl;
+        cout << "+ " << (*it3)->getLeft()->getName() << endl;
         printspace(space);
-        cout << (*it3)->getOp()->getName() << endl;
-        printspace(space);
-        cout << (*it3)->getRight()->getName() << endl;
+        cout << "+ " << (*it3)->getRight()->getName() << endl;
+        space -=1;
         it3++;
         space -=1;
-        printspace(space);
-        cout << "}" << endl;
         for(; it3!=wheres->getCompares()->end(); it3++,it4++)
         {
+            space +=1;
             printspace(space);
-            cout << (*it4)->getName()<<endl;
-
+            cout << "+ LOGICAL OPERATOR[ " << (*it4)->getName() << " ]"<<endl;
             printspace(space);
-            cout << "{" << endl;
+            cout << "+ COMPARE[ " << (*it3)->getOp()->getName() << " ]"<< endl;
             space +=1;
             printspace(space);
             cout << (*it3)->getLeft()->getName() << endl;
             printspace(space);
-            cout << (*it3)->getOp()->getName() << endl;
-            printspace(space);
             cout << (*it3)->getRight()->getName() << endl;
-
             space -=1;
-            printspace(space);
-            cout << "}" << endl;
-
-
+            space -=1;
 
         }
 

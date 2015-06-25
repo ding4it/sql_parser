@@ -55,13 +55,19 @@ class Tname :public Token
 {
 public:
     Tname(string n){this->name = n;tk=T_TNAME;}
+
 };
 
 
 class Table:public Token
 {
+private:
+    Select * s;
 public:
-    Table(string n){this->name = n;tk=T_TABLE;}
+    Select * getSelect(){return s;}
+    Table(string n){this->s == NULL;this->name = n;tk=T_TABLE;}
+    Table(Select *s,string n){this->s = s;this->name = n;tk=T_TABLE;}
+
 };
 
 class CompareUnit:public Token
@@ -155,6 +161,8 @@ public:
     ~Select();
     string getName();
     void printTree();
+    void printTree(int space);
+
 
 };
 

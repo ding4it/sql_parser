@@ -1,285 +1,350 @@
+State 14 conflicts: 2 shift/reduce
+
+
 Grammar
 
-    0 $accept: select $end
+    0 $accept: all $end
 
-    1 select: SELECT tnames FROM tables SEMICOLON
-    2       | SELECT tnames FROM tables WHERE wheres SEMICOLON
+    1 all: select SEMICOLON
 
-    3 tnames: tname
-    4       | tnames COMMA tname
+    2 select: SELECT tnames FROM tables
+    3       | SELECT tnames FROM tables WHERE wheres
 
-    5 tname: WORD
+    4 tnames: tname
+    5       | tnames COMMA tname
 
-    6 tables: table
-    7       | tables COMMA table
+    6 tname: WORD
 
-    8 table: WORD
+    7 tables: table
+    8       | tables COMMA table
+    9       | select
 
-    9 wordornum: WORD
-   10          | NUMBER
+   10 table: WORD
+   11      | LEFTPARENTHESIS select RIGHTPARENTHESIS AS WORD
 
-   11 comp: wordornum COMPARE wordornum
+   12 wordornum: WORD
+   13          | NUMBER
 
-   12 wheres: comp
-   13       | wheres LOGIC comp
+   14 comp: wordornum COMPARE wordornum
+
+   15 wheres: comp
+   16       | wheres LOGIC comp
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
 error (256)
-SELECT (258) 1 2
-FROM (259) 1 2
-WHERE (260) 2
-WORD (261) 5 8 9
-COMMA (262) 4 7
-SEMICOLON (263) 1 2
-COMPARE (264) 11
-NUMBER (265) 10
-LOGIC (266) 13
+SELECT (258) 2 3
+FROM (259) 2 3
+WHERE (260) 3
+WORD (261) 6 10 11 12
+COMMA (262) 5 8
+SEMICOLON (263) 1
+COMPARE (264) 14
+NUMBER (265) 13
+LOGIC (266) 16
+LEFTPARENTHESIS (267) 11
+RIGHTPARENTHESIS (268) 11
+AS (269) 11
 
 
 Nonterminals, with rules where they appear
 
-$accept (12)
+$accept (15)
     on left: 0
-select (13)
-    on left: 1 2, on right: 0
-tnames (14)
-    on left: 3 4, on right: 1 2 4
-tname (15)
-    on left: 5, on right: 3 4
-tables (16)
-    on left: 6 7, on right: 1 2 7
-table (17)
-    on left: 8, on right: 6 7
-wordornum (18)
-    on left: 9 10, on right: 11
-comp (19)
-    on left: 11, on right: 12 13
-wheres (20)
-    on left: 12 13, on right: 2 13
+all (16)
+    on left: 1, on right: 0
+select (17)
+    on left: 2 3, on right: 1 9 11
+tnames (18)
+    on left: 4 5, on right: 2 3 5
+tname (19)
+    on left: 6, on right: 4 5
+tables (20)
+    on left: 7 8 9, on right: 2 3 8
+table (21)
+    on left: 10 11, on right: 7 8
+wordornum (22)
+    on left: 12 13, on right: 14
+comp (23)
+    on left: 14, on right: 15 16
+wheres (24)
+    on left: 15 16, on right: 3 16
 
 
 State 0
 
-    0 $accept: . select $end
+    0 $accept: . all $end
 
     SELECT  shift, and go to state 1
 
-    select  go to state 2
+    all     go to state 2
+    select  go to state 3
 
 
 State 1
 
-    1 select: SELECT . tnames FROM tables SEMICOLON
-    2       | SELECT . tnames FROM tables WHERE wheres SEMICOLON
+    2 select: SELECT . tnames FROM tables
+    3       | SELECT . tnames FROM tables WHERE wheres
 
-    WORD  shift, and go to state 3
+    WORD  shift, and go to state 4
 
-    tnames  go to state 4
-    tname   go to state 5
+    tnames  go to state 5
+    tname   go to state 6
 
 
 State 2
 
-    0 $accept: select . $end
+    0 $accept: all . $end
 
-    $end  shift, and go to state 6
+    $end  shift, and go to state 7
 
 
 State 3
 
-    5 tname: WORD .
+    1 all: select . SEMICOLON
 
-    $default  reduce using rule 5 (tname)
+    SEMICOLON  shift, and go to state 8
 
 
 State 4
 
-    1 select: SELECT tnames . FROM tables SEMICOLON
-    2       | SELECT tnames . FROM tables WHERE wheres SEMICOLON
-    4 tnames: tnames . COMMA tname
+    6 tname: WORD .
 
-    FROM   shift, and go to state 7
-    COMMA  shift, and go to state 8
+    $default  reduce using rule 6 (tname)
 
 
 State 5
 
-    3 tnames: tname .
+    2 select: SELECT tnames . FROM tables
+    3       | SELECT tnames . FROM tables WHERE wheres
+    5 tnames: tnames . COMMA tname
 
-    $default  reduce using rule 3 (tnames)
+    FROM   shift, and go to state 9
+    COMMA  shift, and go to state 10
 
 
 State 6
 
-    0 $accept: select $end .
-
-    $default  accept
-
-
-State 7
-
-    1 select: SELECT tnames FROM . tables SEMICOLON
-    2       | SELECT tnames FROM . tables WHERE wheres SEMICOLON
-
-    WORD  shift, and go to state 9
-
-    tables  go to state 10
-    table   go to state 11
-
-
-State 8
-
-    4 tnames: tnames COMMA . tname
-
-    WORD  shift, and go to state 3
-
-    tname  go to state 12
-
-
-State 9
-
-    8 table: WORD .
-
-    $default  reduce using rule 8 (table)
-
-
-State 10
-
-    1 select: SELECT tnames FROM tables . SEMICOLON
-    2       | SELECT tnames FROM tables . WHERE wheres SEMICOLON
-    7 tables: tables . COMMA table
-
-    WHERE      shift, and go to state 13
-    COMMA      shift, and go to state 14
-    SEMICOLON  shift, and go to state 15
-
-
-State 11
-
-    6 tables: table .
-
-    $default  reduce using rule 6 (tables)
-
-
-State 12
-
-    4 tnames: tnames COMMA tname .
+    4 tnames: tname .
 
     $default  reduce using rule 4 (tnames)
 
 
+State 7
+
+    0 $accept: all $end .
+
+    $default  accept
+
+
+State 8
+
+    1 all: select SEMICOLON .
+
+    $default  reduce using rule 1 (all)
+
+
+State 9
+
+    2 select: SELECT tnames FROM . tables
+    3       | SELECT tnames FROM . tables WHERE wheres
+
+    SELECT           shift, and go to state 1
+    WORD             shift, and go to state 11
+    LEFTPARENTHESIS  shift, and go to state 12
+
+    select  go to state 13
+    tables  go to state 14
+    table   go to state 15
+
+
+State 10
+
+    5 tnames: tnames COMMA . tname
+
+    WORD  shift, and go to state 4
+
+    tname  go to state 16
+
+
+State 11
+
+   10 table: WORD .
+
+    $default  reduce using rule 10 (table)
+
+
+State 12
+
+   11 table: LEFTPARENTHESIS . select RIGHTPARENTHESIS AS WORD
+
+    SELECT  shift, and go to state 1
+
+    select  go to state 17
+
+
 State 13
 
-    2 select: SELECT tnames FROM tables WHERE . wheres SEMICOLON
+    9 tables: select .
 
-    WORD    shift, and go to state 16
-    NUMBER  shift, and go to state 17
-
-    wordornum  go to state 18
-    comp       go to state 19
-    wheres     go to state 20
+    $default  reduce using rule 9 (tables)
 
 
 State 14
 
-    7 tables: tables COMMA . table
+    2 select: SELECT tnames FROM tables .
+    3       | SELECT tnames FROM tables . WHERE wheres
+    8 tables: tables . COMMA table
 
-    WORD  shift, and go to state 9
+    WHERE  shift, and go to state 18
+    COMMA  shift, and go to state 19
 
-    table  go to state 21
+    WHERE     [reduce using rule 2 (select)]
+    COMMA     [reduce using rule 2 (select)]
+    $default  reduce using rule 2 (select)
 
 
 State 15
 
-    1 select: SELECT tnames FROM tables SEMICOLON .
-
-    $default  reduce using rule 1 (select)
-
-
-State 16
-
-    9 wordornum: WORD .
-
-    $default  reduce using rule 9 (wordornum)
-
-
-State 17
-
-   10 wordornum: NUMBER .
-
-    $default  reduce using rule 10 (wordornum)
-
-
-State 18
-
-   11 comp: wordornum . COMPARE wordornum
-
-    COMPARE  shift, and go to state 22
-
-
-State 19
-
-   12 wheres: comp .
-
-    $default  reduce using rule 12 (wheres)
-
-
-State 20
-
-    2 select: SELECT tnames FROM tables WHERE wheres . SEMICOLON
-   13 wheres: wheres . LOGIC comp
-
-    SEMICOLON  shift, and go to state 23
-    LOGIC      shift, and go to state 24
-
-
-State 21
-
-    7 tables: tables COMMA table .
+    7 tables: table .
 
     $default  reduce using rule 7 (tables)
 
 
+State 16
+
+    5 tnames: tnames COMMA tname .
+
+    $default  reduce using rule 5 (tnames)
+
+
+State 17
+
+   11 table: LEFTPARENTHESIS select . RIGHTPARENTHESIS AS WORD
+
+    RIGHTPARENTHESIS  shift, and go to state 20
+
+
+State 18
+
+    3 select: SELECT tnames FROM tables WHERE . wheres
+
+    WORD    shift, and go to state 21
+    NUMBER  shift, and go to state 22
+
+    wordornum  go to state 23
+    comp       go to state 24
+    wheres     go to state 25
+
+
+State 19
+
+    8 tables: tables COMMA . table
+
+    WORD             shift, and go to state 11
+    LEFTPARENTHESIS  shift, and go to state 12
+
+    table  go to state 26
+
+
+State 20
+
+   11 table: LEFTPARENTHESIS select RIGHTPARENTHESIS . AS WORD
+
+    AS  shift, and go to state 27
+
+
+State 21
+
+   12 wordornum: WORD .
+
+    $default  reduce using rule 12 (wordornum)
+
+
 State 22
 
-   11 comp: wordornum COMPARE . wordornum
+   13 wordornum: NUMBER .
 
-    WORD    shift, and go to state 16
-    NUMBER  shift, and go to state 17
-
-    wordornum  go to state 25
+    $default  reduce using rule 13 (wordornum)
 
 
 State 23
 
-    2 select: SELECT tnames FROM tables WHERE wheres SEMICOLON .
+   14 comp: wordornum . COMPARE wordornum
 
-    $default  reduce using rule 2 (select)
+    COMPARE  shift, and go to state 28
 
 
 State 24
 
-   13 wheres: wheres LOGIC . comp
+   15 wheres: comp .
 
-    WORD    shift, and go to state 16
-    NUMBER  shift, and go to state 17
-
-    wordornum  go to state 18
-    comp       go to state 26
+    $default  reduce using rule 15 (wheres)
 
 
 State 25
 
-   11 comp: wordornum COMPARE wordornum .
+    3 select: SELECT tnames FROM tables WHERE wheres .
+   16 wheres: wheres . LOGIC comp
 
-    $default  reduce using rule 11 (comp)
+    LOGIC  shift, and go to state 29
+
+    $default  reduce using rule 3 (select)
 
 
 State 26
 
-   13 wheres: wheres LOGIC comp .
+    8 tables: tables COMMA table .
 
-    $default  reduce using rule 13 (wheres)
+    $default  reduce using rule 8 (tables)
+
+
+State 27
+
+   11 table: LEFTPARENTHESIS select RIGHTPARENTHESIS AS . WORD
+
+    WORD  shift, and go to state 30
+
+
+State 28
+
+   14 comp: wordornum COMPARE . wordornum
+
+    WORD    shift, and go to state 21
+    NUMBER  shift, and go to state 22
+
+    wordornum  go to state 31
+
+
+State 29
+
+   16 wheres: wheres LOGIC . comp
+
+    WORD    shift, and go to state 21
+    NUMBER  shift, and go to state 22
+
+    wordornum  go to state 23
+    comp       go to state 32
+
+
+State 30
+
+   11 table: LEFTPARENTHESIS select RIGHTPARENTHESIS AS WORD .
+
+    $default  reduce using rule 11 (table)
+
+
+State 31
+
+   14 comp: wordornum COMPARE wordornum .
+
+    $default  reduce using rule 14 (comp)
+
+
+State 32
+
+   16 wheres: wheres LOGIC comp .
+
+    $default  reduce using rule 16 (wheres)

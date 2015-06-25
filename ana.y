@@ -9,25 +9,24 @@ extern int yyparse(void);
 extern int yyerror(string);
 
 %}
-%token SELECT FROM WHERE WORD COMMA SEMICOLON COMPARE NUMBER LOGIC
+%token SELECT FROM WHERE WORD COMMA SEMICOLON COMPARE NUMBER LOGIC LEFTPARENTHESIS RIGHTPARENTHESIS AS
 
 %%
+all:
+    select SEMICOLON
+    {
+    ((Select*) $$)->printTree();
+    return 0;
+    }
 select:
-    SELECT tnames FROM tables SEMICOLON
+    SELECT tnames FROM tables
 {
     $$ = new Select((Tnames*)$2,(Tables*)$4,NULL);
-    cout << $$->getName()<<endl;
-    ((Select*) $$)->printTree();
-    return 0;
 }
 
-    | SELECT tnames FROM tables WHERE wheres SEMICOLON
+    | SELECT tnames FROM tables WHERE wheres
 {
     $$ = new Select((Tnames*)$2,(Tables*)$4,(Wheres*)$6);
-    cout << $$->getName() << endl;
-    ((Select*) $$)->printTree();
-
-    return 0;
 }
 
 tnames:
@@ -40,15 +39,24 @@ tname:
     WORD
     {    $$ = new Tname($1->getName());    }
 
+
 tables:
     table
     {    $$ = new Tables((Table*)$1);    }
     | tables COMMA table
     {    $$ = new Tables((Tables*)$1,(Table*)$3);    }
+    | select
+    {}
+
 
 table:
     WORD
-    {    $$ = new Table($1->getName());    }
+    {
+    $$ = new Table($1->getName());    }
+    | LEFTPARENTHESIS select RIGHTPARENTHESIS AS WORD
+    {
+        $$ = new Table((Select*)$2,$5->getName());
+    }
 
 wordornum:
     WORD
@@ -79,5 +87,3 @@ int main()
     yyparse();
     return 0;
 }
-
-

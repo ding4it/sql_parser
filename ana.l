@@ -14,15 +14,18 @@ word       {letter}({letter}|{digit})*
 whitespace ([ \t]*)
 compare [<>=]|(!=)|(>=)|(<=)|(like)
 number {digit}+\.?(digit)*
-logic (and)|(or)
 %%
+
+as {return AS;}
+[\(]   {return LEFTPARENTHESIS;}
+[\)]  {return RIGHTPARENTHESIS;}
 
 select {return SELECT;}
 from {return FROM;}
 where {return WHERE;}
 {whitespace} {}
-{logic} {yylval = new Logic(yytext); return LOGIC;}
-
+and {yylval = new Logic("AND"); return LOGIC;}
+or {yylval = new Logic("OR"); return LOGIC;}
 
 , {return COMMA;}
 ; {return SEMICOLON;}
